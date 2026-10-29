@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyFirstApi.Data;
-using MyFirstApi.Models;
 using MyFirstApi.DTOs;
+using MyFirstApi.Models;
 
 namespace MyFirstApi.Controllers;
 
@@ -21,10 +21,18 @@ public class UsersController : ControllerBase
     // GET: api/users
     [HttpGet]
     public async Task<IActionResult> GetUsers()
-    {
-        var users = await _context.Users.ToListAsync();
-        return Ok(users);
-    }
+{
+    var users = await _context.Users
+        .Select(u => new
+        {
+            u.Id,
+            u.Name,
+            u.Email
+        })
+        .ToListAsync();
+
+    return Ok(users);
+}
 
     // GET: api/users/1
     [HttpGet("{id}")]
